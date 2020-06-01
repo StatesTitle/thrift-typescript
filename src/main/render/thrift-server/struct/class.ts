@@ -38,6 +38,7 @@ export function renderClass(
     node: InterfaceWithFields,
     state: IRenderState,
     isExported: boolean,
+    extendError: boolean = false,
 ): ts.ClassDeclaration {
     const fields: Array<ts.PropertyDeclaration> = [
         ...createFieldsForStruct(node, state),
@@ -60,6 +61,10 @@ export function renderClass(
 
         fields.splice(-2, 0, nameField)
     }
+
+    const optionallyAddErrorToPrototypeChain: Array<ts.Statement> = extendError
+        ? createAddErrorToPrototypeChainStatement()
+        : Array<ts.Statement>()
 
     /**
      * After creating the properties on our class for the struct fields we must create
@@ -88,7 +93,11 @@ export function renderClass(
     // Build the constructor body
     const ctor: ts.ConstructorDeclaration = createClassConstructor(
         [argsParameter],
-        [createSuperCall(), ...fieldAssignments],
+        [
+            createSuperCall(),
+            ...optionallyAddErrorToPrototypeChain,
+            ...fieldAssignments,
+        ],
     )
 
     // export class <node.name> { ... }
@@ -365,4 +374,54 @@ function createArgsTypeForStruct(
         ts.createIdentifier(looseNameForStruct(node, state)),
         undefined,
     )
+}
+
+/**
+ * Add Error to the class's prototype chain so that the class looks like
+ * it extends Error. It's convenient for Thrift exceptions to look like
+ * Errors because some tools/libraries work better that way. For example
+ * Jest's `toThrow()` expectation.
+ *
+ * We avoid ACTUALLY extending Error because we don't want to call
+ * super() and as of 2020-06-01 the TypeScript compiler doesn't allow
+ * extending a class and not calling super(). It gives this error:
+ * TS2377: Constructors for derived classes must contain a 'super' call.
+ *
+ * And we don't want to call super() because Error's constructor sets a
+ * few fields (message, name, etc). We don't want those fields to be set
+ * because they likely won't be defined in the Thrift definition, or if
+ * they ARE defined int he Thrift definition they will conflict with
+ * their meaning in the Error class. It could certainly be argued that
+ * this is the wrong decision and that we SHOULD call Error's
+ * constructor to cause the standard error fields to be set. It would
+ * mean that users of this compiler can't have fields named "message,"
+ * "name," etc in their Thrift exceptions. And maybe that's ok?
+ */
+function createAddErrorToPrototypeChainStatement(): Array<ts.Statement> {
+    return [
+        // Object.setPrototypeOf(Object.getPrototypeOf(this), Error.prototype)
+        ts.createStatement(
+            ts.createCall(
+                ts.createPropertyAccess(
+                    ts.createIdentifier('Object'),
+                    ts.createIdentifier('setPrototypeOf'),
+                ),
+                undefined,
+                [
+                    ts.createCall(
+                        ts.createPropertyAccess(
+                            ts.createIdentifier('Object'),
+                            ts.createIdentifier('getPrototypeOf'),
+                        ),
+                        undefined,
+                        [COMMON_IDENTIFIERS.this],
+                    ),
+                    ts.createPropertyAccess(
+                        COMMON_IDENTIFIERS.Error,
+                        ts.createIdentifier('prototype'),
+                    ),
+                ],
+            ),
+        ),
+    ]
 }
