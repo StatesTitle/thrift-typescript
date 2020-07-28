@@ -483,6 +483,7 @@ export class Processor {
                 return;
             }
             else {
+                console.error("Unexpected exception while handling peg: ", err);
                 const result: thrift.Thrift.TApplicationException = new thrift.Thrift.TApplicationException(thrift.Thrift.TApplicationExceptionType.UNKNOWN, "The server experienced an unexpected exception while processing the request.");
                 output.writeMessageBegin("peg", thrift.Thrift.MessageType.EXCEPTION, requestId);
                 result.write(output);

@@ -641,6 +641,7 @@ export class Processor<Context = any> extends thrift.ThriftProcessor<Context, IH
                 return output.flush();
             }
             else {
+                console.error("Unexpected exception while handling peg: ", err);
                 const result: thrift.TApplicationException = new thrift.TApplicationException(thrift.TApplicationExceptionType.UNKNOWN, "The server experienced an unexpected exception while processing the request.");
                 output.writeMessageBegin("peg", thrift.MessageType.EXCEPTION, requestId);
                 thrift.TApplicationExceptionCodec.encode(result, output);
