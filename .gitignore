@@ -10,9 +10,7 @@ node_modules
 .npm
 
 # Typescript artifacts
-# States Title change: Don't ignore dist in this branch so we can use
-# this branch directly and not worry about publishing a package.
-#dist
+dist
 
 # nyc artifacts
 coverage/
