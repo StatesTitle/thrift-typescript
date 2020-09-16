@@ -539,7 +539,7 @@ function createElseForExceptions(
                 // console.error('Unexpected exception...', err)
                 createMethodCallStatement(COMMON_IDENTIFIERS.console, 'error', [
                     ts.createLiteral(
-                        `Unexpected exception while handling ${funcDef.name.value}: `,
+                        `Unexpected exception while handling ${funcDef.name.value}:`,
                     ),
                     COMMON_IDENTIFIERS.err,
                 ]),
@@ -689,7 +689,7 @@ function createExceptionHandlers(
             // console.error('Unexpected exception...', err)
             createMethodCallStatement(COMMON_IDENTIFIERS.console, 'error', [
                 ts.createLiteral(
-                    `Unexpected exception while handling ${funcDef.name.value}: `,
+                    `Unexpected exception while handling ${funcDef.name.value}:`,
                 ),
                 COMMON_IDENTIFIERS.err,
             ]),

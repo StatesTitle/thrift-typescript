@@ -302,7 +302,7 @@ export class Processor {
                 return;
             }
             else {
-                console.error("Unexpected exception while handling ping: ", err);
+                console.error("Unexpected exception while handling ping:", err);
                 const result: thrift.Thrift.TApplicationException = new thrift.Thrift.TApplicationException(thrift.Thrift.TApplicationExceptionType.UNKNOWN, "The server experienced an unexpected exception while processing the request.");
                 output.writeMessageBegin("ping", thrift.Thrift.MessageType.EXCEPTION, requestId);
                 result.write(output);
