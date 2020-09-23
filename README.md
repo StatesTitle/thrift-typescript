@@ -5,7 +5,7 @@ Generate TypeScript from Thrift IDL files.
 ## Installation
 
 ```sh
-$ npm install --save @creditkarma/thrift-typescript
+$ npm install --save @statestitle/thrift-typescript
 ```
 
 ## Usage
@@ -56,7 +56,7 @@ $ thrift-typescript one.thrift two.thrift three.thrift
 You can also generate files using the JavaScript API:
 
 ```typescript
-import { generate } from '@creditkarma/thrift-typescript'
+import { generate } from '@statestitle/thrift-typescript'
 
 // Generates TypeScript and saves to given outDir
 generate({
@@ -79,7 +79,7 @@ Note: This method of code generation does not support includes. The Thrift gener
 
 ```typescript
 import { readFileSync } from 'fs'
-import { make } from '@creditkarma/thrift-typescript'
+import { make } from '@statestitle/thrift-typescript'
 
 const rawThrift: string = readFileSync('./thrift/simple.thrift', 'utf-8')
 const generatedCode: string = make(rawThrift)
@@ -87,7 +87,7 @@ const generatedCode: string = make(rawThrift)
 
 ## Thrift Server
 
-*v2.x of Thrift TypeScript equires @creditkarma/thrift-server v0.7.0 or higher*
+*v2.x of Thrift TypeScript equires @statestitle/thrift-server v0.7.0 or higher*
 
 While Thrift TypeScript can be used to generate code comaptible with the [Apache Thrift Library](https://github.com/apache/thrift/tree/master/lib/nodejs), it is recommended to use with [Thrift Server](https://github.com/creditkarma/thrift-server). Details on the Apache usage are below.
 
@@ -96,9 +96,9 @@ Thrift Server adds Thrift support to Express or Hapi with plugins or middleware.
 Install the Thrift Server implementation for your server of choice. For this example we will be using express middleware and the request http client library.
 
 ```sh
-$ npm install --save @creditkarma/thrift-server-core
-$ npm install --save @creditkarma/thrift-server-express
-$ npm install --save @creditkarma/thrift-client
+$ npm install --save @statestitle/thrift-server-core
+$ npm install --save @statestitle/thrift-server-express
+$ npm install --save @statestitle/thrift-client
 $ npm install --save express
 $ npm install --save request
 $ npm install --save @types/express
@@ -130,7 +130,7 @@ You'll notice that the Client class is a generic. The type parameter represents 
 import {
     createHttpClient,
     HttpConnection,
-} from '@creditkarma/thrift-client'
+} from '@statestitle/thrift-client'
 
 import * as request from 'request'
 import { CoreOptions } from 'request'
@@ -158,7 +158,7 @@ In the server we can then inspect the headers we set in the client.
 ```typescript
 import * as bodyParser from 'body-parser'
 import * as express from 'express'
-import { ThriftServerExpress } from '@creditkarma/thrift-server-express'
+import { ThriftServerExpress } from '@statestitle/thrift-server-express'
 
 import {
     Calculator,
@@ -239,7 +239,7 @@ export enum Colors {
 export type name = string;
 ```
 
-The only interesting thing here is the handling of `i64`. JavaScript doesn't support a full 64-bits of integer percision, so we wrap the value in an `Int64` object. You will notice that this doesn't really help in cases where you define a constant or default value in your Thrift file, but it does allow 64-bit integers received from outside of JS to be handled correctly. The object is exported from `@creditkarma/thrift-server-core` and extends [node-int64](https://github.com/broofa/node-int64).
+The only interesting thing here is the handling of `i64`. JavaScript doesn't support a full 64-bits of integer percision, so we wrap the value in an `Int64` object. You will notice that this doesn't really help in cases where you define a constant or default value in your Thrift file, but it does allow 64-bit integers received from outside of JS to be handled correctly. The object is exported from `@statestitle/thrift-server-core` and extends [node-int64](https://github.com/broofa/node-int64).
 
 #### Struct
 

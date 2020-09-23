@@ -147,7 +147,7 @@ export interface IMakeOptions {
 
     // What is the library to import thrift from
     // Defaults to 'thrift' for target = 'apache'
-    // Defaults to '@creditkarma/thrift-server-core' for target = 'thrift-server'
+    // Defaults to '@statestitle/thrift-server-core' for target = 'thrift-server'
     library: string
 
     // Should we render strict unions?
